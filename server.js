@@ -22,17 +22,37 @@ const db = mysql.createConnection(
 );
 
 // GET all candidates
-// db.query(`SELECT * FROM candidates`, (err, rows) => {
-//   console.log(rows);
-// });
+app.get('/api/candidates', (req, res) => {
+  const sql = `SELECT * FROM candidates`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: rows
+    });
+  });
+});
 
 // GET a single candidate
-// db.query(`SELECT * FROM candidates WHERE id = 1`, (err, rows) => {
-//   if (err) {
-//     console.log(err);
-//   }
-//   console.log(rows);
-// });
+app.get('/api/candidate/:id', (req, res) => {
+  const sql = `SELECT * FROM candidates WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: row
+    });
+  });
+});
 
 // Delete a candidate
 // db.query(`DELETE FROM candidates WHERE id = ?`, 1, (err, result) => {
